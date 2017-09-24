@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheets %}
+    <style>
+        .exercise-table {
+            width: 100%;
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+        .exercise-table thead tr {
+            border-bottom: 1px solid black;
+        }
+
+        .exercise-table thead th {
+            border-right: 1px solid black;
+        }
+
+        .exercise-table tbody td {
+            border-right: 1px solid black;
+            padding: 2px 10px;
+        }
+
+        .table-exercise-name {
+            float: left;
+        }
+
+        .table-exercise-repetitions {
+            float: right;
+        }
+
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div id="wrapper">
+        <div id="container">
+            <h2>{{ 'dashboard.header'|trans }}</h2>
+
+            <div>{{ 'dashboard.subtitle'|trans }}</div>
+
+            <table class="exercise-table">
+                <thead>
+                    <tr>
+                        <th>{{ 'dashboard.table.2weeks'|trans }}</th>
+                        <th>{{ 'dashboard.table.week'|trans }}</th>
+                        <th>{{ 'dashboard.table.today'|trans }}</th>
+                    </tr>
+                </thead>
+
+                {% set count = max(data[0]|length, data[1]|length, data[2]|length) %}
+
+                <tbody>
+                    {% for i in 1..count %}
+                    <tr>
+                        <td>
+                            {% if data[0][i] is defined %}
+                            {% include '/dashboard/block/exercise-row.html.twig' with { exercise: data[0][i] } %}
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if data[1][i] is defined %}
+                                {% include '/dashboard/block/exercise-row.html.twig' with { exercise: data[1][i] } %}
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if data[2][i] is defined %}
+                                {% include '/dashboard/block/exercise-row.html.twig' with { exercise: data[2][i] } %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
