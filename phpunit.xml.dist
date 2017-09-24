@@ -16,6 +16,11 @@
         <testsuite name="Project Test Suite">
             <directory>tests</directory>
         </testsuite>
+
+        <testsuite name="unit-test-suit">
+            <directory>tests</directory>
+            <exclude>tests/AppBundle/Controller</exclude>
+        </testsuite>
     </testsuites>
 
     <filter>
