@@ -33,6 +33,10 @@ services:
     # AppBundle\Service\ExampleService:
     #     arguments:
     #         $someArgument: 'some_value'
-
     AppBundle\Service\Faker\Provider\ExerciseProvider:
         tags: ['nelmio_alice.faker.provider']
+
+    AppBundle\Repository\ExerciseRepository:
+        factory: ['@doctrine.orm.default_entity_manager', getRepository]
+        arguments:
+            - AppBundle:Exercise
