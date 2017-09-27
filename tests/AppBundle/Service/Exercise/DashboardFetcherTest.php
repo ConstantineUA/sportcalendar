@@ -80,7 +80,7 @@ class DashboardFetcherTest extends TestCase
         $this->assertArrayHasKey($this->twoWeeksAgo, $results);
     }
 
-    public function testFetchedRecordsAreOrderedBetweenDates()
+    public function testFetchedRecordsAreDividedBetweenDates()
     {
         $record1 = $this->createMock(Exercise::class);
         $record2 = $this->createMock(Exercise::class);
@@ -103,5 +103,27 @@ class DashboardFetcherTest extends TestCase
         $this->assertContains($record3, $results[$this->twoWeeksAgo]);
         $this->assertContains($record2, $results[$this->weekAgo]);
         $this->assertContains($record2, $results[$this->weekAgo]);
+    }
+
+    public function testFetchedRecordsAreSorted()
+    {
+        $record1 = $this->createMock(Exercise::class);
+        $record2 = $this->createMock(Exercise::class);
+
+        $record1->method('getDate')->will($this->returnValue(new \DateTime($this->today)));
+        $record2->method('getDate')->will($this->returnValue(new \DateTime($this->today)));
+
+        $record1->method('getDescription')->will($this->returnValue('Exercise Z'));
+        $record2->method('getDescription')->will($this->returnValue('Exercise A'));
+
+
+        $this->repo
+            ->method('findByDate')
+            ->will($this->returnValue([ $record1, $record2]));
+
+        $results = $this->fetcher->fetch(new \DateTime());
+
+        $this->assertEquals($record2, $results[$this->today][0]);
+        $this->assertEquals($record1, $results[$this->today][1]);
     }
 }

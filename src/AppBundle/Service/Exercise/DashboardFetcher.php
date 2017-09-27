@@ -63,7 +63,7 @@ class DashboardFetcher
         $records = $this->repo->findByDate(array_keys($results));
 
         usort($records, function ($exerciseA, $exerciseB) {
-            return $exerciseA->getDescription() <=> $exerciseB->getDescription();
+            return strnatcasecmp($exerciseA->getDescription(), $exerciseB->getDescription());
         });
 
         foreach ($records as $record) {
