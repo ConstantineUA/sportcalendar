@@ -3,6 +3,7 @@
 namespace AppBundle\Service\Exercise;
 
 use AppBundle\Repository\ExerciseRepository;
+use AppBundle\Service\DateTime\DateTimeFormatter;
 
 /**
  * Service class to prepare exercise records to be displayed on the dashboard
@@ -12,18 +13,29 @@ use AppBundle\Repository\ExerciseRepository;
 class DashboardFetcher
 {
     /**
+     * Exercise entity repository
+     *
      * @var ExerciseRepository
      */
     protected $repo;
 
     /**
+     * Helper class to format DateTime objects
+     *
+     * @var DateTimeFormatter
+     */
+    protected $formatter;
+
+    /**
      * Constructor, inject dependencies
      *
      * @param ExerciseRepository $repo
+     * @param DateTimeFormatter $formatter
      */
-    public function __construct(ExerciseRepository $repo)
+    public function __construct(ExerciseRepository $repo, DateTimeFormatter $formatter)
     {
         $this->repo = $repo;
+        $this->formatter = $formatter;
     }
 
     /**
@@ -40,11 +52,14 @@ class DashboardFetcher
         $twoWeeksBefore = (clone $startDate)->modify('-2 weeks');
 
         $results = [
-            $twoWeeksBefore->format('Y-m-d') => [],
-            $weekBefore->format('Y-m-d') => [],
-            $startDate->format('Y-m-d') => [],
+            $this->formatter->toDbFormat($twoWeeksBefore) => [],
+            $this->formatter->toDbFormat($weekBefore) => [],
+            $this->formatter->toDbFormat($startDate) => [],
         ];
 
+        // I'd prefer to have a custom method in the repository to run this query
+        // along with the logic to prepare dates but the task description
+        // suggested to implement it without repository methods
         $records = $this->repo->findByDate(array_keys($results));
 
         usort($records, function ($exerciseA, $exerciseB) {
@@ -52,7 +67,7 @@ class DashboardFetcher
         });
 
         foreach ($records as $record) {
-            $results[$record->getDate()->format('Y-m-d')][] = $record;
+            $results[$this->formatter->toDbFormat($record->getDate())][] = $record;
         }
 
         return $results;

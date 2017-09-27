@@ -4,6 +4,7 @@ namespace Test\AppBundle\Service\Exercise;
 
 use AppBundle\Entity\Exercise;
 use AppBundle\Repository\ExerciseRepository;
+use AppBundle\Service\DateTime\DateTimeFormatter;
 use AppBundle\Service\Exercise\DashboardFetcher;
 
 use PHPUnit\Framework\TestCase;
@@ -13,6 +14,8 @@ class DashboardFetcherTest extends TestCase
     protected $repo;
 
     protected $fetcher;
+
+    protected $formatter;
 
     protected $today;
 
@@ -27,7 +30,15 @@ class DashboardFetcherTest extends TestCase
             ->setMethods(['findByDate'])
             ->getMock();
 
-        $this->fetcher = new DashboardFetcher($this->repo);
+        $this->formatter = $this->createMock(DateTimeFormatter::class);
+
+        $this->formatter
+            ->method('toDbFormat')
+            ->will($this->returnCallback(function ($value) {
+                return $value->format('Y-m-d');
+            }));
+
+        $this->fetcher = new DashboardFetcher($this->repo, $this->formatter);
 
         $this->today = '2017-09-24';
         $this->weekAgo = '2017-09-17';
