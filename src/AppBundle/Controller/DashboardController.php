@@ -11,12 +11,12 @@ class DashboardController extends Controller
     /**
      * Display list of done exercises for today, a week ago and 2 weeks ago
      *
-     * @Route("/", name="homepage")
+     * @Route("/calendar", name="app_dashboard_calendar")
      *
      * @param DashboardFetcher $fetcher
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function indexAction(DashboardFetcher $fetcher)
+    public function calendarAction(DashboardFetcher $fetcher)
     {
         $data = $fetcher->fetch(new \DateTime('now'));
 

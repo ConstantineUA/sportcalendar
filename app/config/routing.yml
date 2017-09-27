@@ -3,5 +3,11 @@ app:
     type: annotation
     prefix: /{_locale}
     requirements:
-        # trailing pipe to allow URLs without a locale prefix
-        _locale: '%locales%|'
+        _locale: '%locales%'
+
+root:
+    path: /
+    defaults:
+        _controller: FrameworkBundle:Redirect:redirect
+        permanent: true
+        route: app_dashboard_calendar
