@@ -57,7 +57,7 @@ class DashboardFetcherTest extends TestCase
             ->expects($this->once())
             ->method('findByDate')
             ->with($this->equalTo($expectedParams, 0, 10, true))
-            ->will($this->returnValue([]));
+            ->willReturn([]);
 
 
         $this->fetcher->fetch($startDate);
@@ -69,7 +69,7 @@ class DashboardFetcherTest extends TestCase
 
         $this->repo
             ->method('findByDate')
-            ->will($this->returnValue([]));
+            ->willReturn([]);
 
         $results = $this->fetcher->fetch($startDate);
 
@@ -87,15 +87,15 @@ class DashboardFetcherTest extends TestCase
         $record3 = $this->createMock(Exercise::class);
         $record4 = $this->createMock(Exercise::class);
 
-        $record1->method('getDate')->will($this->returnValue(new \DateTime($this->today)));
-        $record2->method('getDate')->will($this->returnValue(new \DateTime($this->weekAgo)));
-        $record3->method('getDate')->will($this->returnValue(new \DateTime($this->twoWeeksAgo)));
-        $record4->method('getDate')->will($this->returnValue(new \DateTime($this->weekAgo)));
+        $record1->method('getDate')->willReturn(new \DateTime($this->today));
+        $record2->method('getDate')->willReturn(new \DateTime($this->weekAgo));
+        $record3->method('getDate')->willReturn(new \DateTime($this->twoWeeksAgo));
+        $record4->method('getDate')->willReturn(new \DateTime($this->weekAgo));
 
 
         $this->repo
             ->method('findByDate')
-            ->will($this->returnValue([ $record1, $record2, $record3, $record4 ]));
+            ->willReturn([ $record1, $record2, $record3, $record4 ]);
 
         $results = $this->fetcher->fetch(new \DateTime());
 
@@ -110,16 +110,16 @@ class DashboardFetcherTest extends TestCase
         $record1 = $this->createMock(Exercise::class);
         $record2 = $this->createMock(Exercise::class);
 
-        $record1->method('getDate')->will($this->returnValue(new \DateTime($this->today)));
-        $record2->method('getDate')->will($this->returnValue(new \DateTime($this->today)));
+        $record1->method('getDate')->willReturn(new \DateTime($this->today));
+        $record2->method('getDate')->willReturn(new \DateTime($this->today));
 
-        $record1->method('getDescription')->will($this->returnValue('Exercise Z'));
-        $record2->method('getDescription')->will($this->returnValue('Exercise A'));
+        $record1->method('getDescription')->willReturn('Exercise Z');
+        $record2->method('getDescription')->willReturn('Exercise A');
 
 
         $this->repo
             ->method('findByDate')
-            ->will($this->returnValue([ $record1, $record2]));
+            ->willReturn([$record1, $record2]);
 
         $results = $this->fetcher->fetch(new \DateTime());
 
