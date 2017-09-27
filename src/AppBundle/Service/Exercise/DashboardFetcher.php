@@ -45,9 +45,7 @@ class DashboardFetcher
             $startDate->format('Y-m-d') => [],
         ];
 
-        $records = $this->repo->findBy([
-            'date' => array_keys($results),
-        ]);
+        $records = $this->repo->findByDate(array_keys($results));
 
         usort($records, function ($exerciseA, $exerciseB) {
             return $exerciseA->getDescription() <=> $exerciseB->getDescription();

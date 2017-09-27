@@ -22,7 +22,10 @@ class DashboardFetcherTest extends TestCase
 
     public function setUp()
     {
-        $this->repo = $this->createMock(ExerciseRepository::class);
+        $this->repo = $this->getMockBuilder(ExerciseRepository::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['findByDate'])
+            ->getMock();
 
         $this->fetcher = new DashboardFetcher($this->repo);
 
@@ -36,12 +39,12 @@ class DashboardFetcherTest extends TestCase
         $startDate = new \DateTime($this->today);
 
         $expectedParams = [
-            'date' => [ $this->today, $this->weekAgo, $this->twoWeeksAgo ],
+            $this->today, $this->weekAgo, $this->twoWeeksAgo,
         ];
 
         $this->repo
             ->expects($this->once())
-            ->method('findBy')
+            ->method('findByDate')
             ->with($this->equalTo($expectedParams, 0, 10, true))
             ->will($this->returnValue([]));
 
@@ -54,7 +57,7 @@ class DashboardFetcherTest extends TestCase
         $startDate = new \DateTime($this->today);
 
         $this->repo
-            ->method('findBy')
+            ->method('findByDate')
             ->will($this->returnValue([]));
 
         $results = $this->fetcher->fetch($startDate);
@@ -80,7 +83,7 @@ class DashboardFetcherTest extends TestCase
 
 
         $this->repo
-            ->method('findBy')
+            ->method('findByDate')
             ->will($this->returnValue([ $record1, $record2, $record3, $record4 ]));
 
         $results = $this->fetcher->fetch(new \DateTime());
