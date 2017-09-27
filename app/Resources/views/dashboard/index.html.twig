@@ -51,25 +51,15 @@
                 {% set count = max(data[0]|length, data[1]|length, data[2]|length) %}
 
                 <tbody>
-                    {% for i in 1..count %}
+                    {% for recordIndex in 1..count %}
                     <tr>
+                        {% for day, records in data %}
                         <td>
-                            {% if data[0][i] is defined %}
-                            {% include '/dashboard/block/exercise-row.html.twig' with { exercise: data[0][i] } %}
+                            {% if data[day][recordIndex] is defined %}
+                            {% include '/dashboard/block/exercise-row.html.twig' with { exercise: data[day][recordIndex] } %}
                             {% endif %}
                         </td>
-
-                        <td>
-                            {% if data[1][i] is defined %}
-                                {% include '/dashboard/block/exercise-row.html.twig' with { exercise: data[1][i] } %}
-                            {% endif %}
-                        </td>
-
-                        <td>
-                            {% if data[2][i] is defined %}
-                                {% include '/dashboard/block/exercise-row.html.twig' with { exercise: data[2][i] } %}
-                            {% endif %}
-                        </td>
+                        {% endfor %}
                     </tr>
                     {% endfor %}
                 </tbody>
