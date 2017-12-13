@@ -48,15 +48,15 @@
                     </tr>
                 </thead>
 
-                {% set count = max(data[0]|length, data[1]|length, data[2]|length) %}
+                {% set count = max(today|length, weekAgo|length, twoWeeksAgo|length) %}
 
                 <tbody>
                     {% for recordIndex in 1..count %}
                     <tr>
-                        {% for day, records in data %}
+                        {% for records in [today, weekAgo, twoWeeksAgo] %}
                         <td>
-                            {% if data[day][recordIndex] is defined %}
-                            {% include '/dashboard/block/exercise-row.html.twig' with { exercise: data[day][recordIndex] } %}
+                            {% if records[recordIndex] is defined %}
+                            {% include '/dashboard/block/exercise-row.html.twig' with { exercise: records[recordIndex] } %}
                             {% endif %}
                         </td>
                         {% endfor %}

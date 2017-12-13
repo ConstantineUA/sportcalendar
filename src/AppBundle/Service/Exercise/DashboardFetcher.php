@@ -4,6 +4,7 @@ namespace AppBundle\Service\Exercise;
 
 use AppBundle\Repository\ExerciseRepository;
 use AppBundle\Service\DateTime\DateTimeFormatter;
+use AppBundle\Entity\ExerciseDashboardContainer;
 
 /**
  * Service class to prepare exercise records to be displayed on the dashboard
@@ -44,34 +45,45 @@ class DashboardFetcher
      * and return them as array grouped by date
      *
      * @param \DateTime $startDate
-     * @return array
+     * @return ExerciseDashboardContainer
      */
     public function fetch(\DateTime $startDate)
     {
         $weekBefore = (clone $startDate)->modify('-1 week');
         $twoWeeksBefore = (clone $startDate)->modify('-2 weeks');
 
-        $results = [
-            $this->formatter->toDbFormat($twoWeeksBefore) => [],
-            $this->formatter->toDbFormat($weekBefore) => [],
-            $this->formatter->toDbFormat($startDate) => [],
-        ];
-
         // I'd prefer to have a custom method in the repository to run this query
         // along with the logic to prepare dates but the task description
         // suggested to implement it without repository methods
         $records = $this->repo->findBy([
-            'date' => array_keys($results),
+            'date' => [
+                $this->formatter->toDbFormat($twoWeeksBefore),
+                $this->formatter->toDbFormat($weekBefore),
+                $this->formatter->toDbFormat($startDate),
+            ],
         ]);
 
         usort($records, function ($exerciseA, $exerciseB) {
             return strnatcasecmp($exerciseA->getDescription(), $exerciseB->getDescription());
         });
 
+        $container = $this->getDashboardContainer();
+        $container->setStartDate($startDate);
+
         foreach ($records as $record) {
-            $results[$this->formatter->toDbFormat($record->getDate())][] = $record;
+            $container->addExercise($record);
         }
 
-        return $results;
+        return $container;
+    }
+
+    /**
+     * Separate method to create ExerciseDashboardContainer
+     *
+     * @return \AppBundle\Entity\ExerciseDashboardContainer
+     */
+    protected function getDashboardContainer()
+    {
+        return new ExerciseDashboardContainer();
     }
 }

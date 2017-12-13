@@ -8,6 +8,7 @@ use AppBundle\Service\DateTime\DateTimeFormatter;
 use AppBundle\Service\Exercise\DashboardFetcher;
 
 use PHPUnit\Framework\TestCase;
+use AppBundle\Entity\ExerciseDashboardContainer;
 
 /**
  * Unit tests for DashboardFetcher service
@@ -104,7 +105,7 @@ class DashboardFetcherTest extends TestCase
     /**
      * Test format of returned results
      */
-    public function testFetchResultsAreReturnedAsArrayWithThreeColumns()
+    public function testFetchResultsAreReturnedAsDashboardContainer()
     {
         $startDate = new \DateTime($this->today);
 
@@ -114,39 +115,7 @@ class DashboardFetcherTest extends TestCase
 
         $results = $this->fetcher->fetch($startDate);
 
-        $this->assertInternalType('array', $results);
-
-        $this->assertArrayHasKey($this->today, $results);
-        $this->assertArrayHasKey($this->weekAgo, $results);
-        $this->assertArrayHasKey($this->twoWeeksAgo, $results);
-    }
-
-    /**
-     * Test that fetched results are correctly rearranged
-     */
-    public function testFetchedRecordsAreDividedBetweenDates()
-    {
-        $record1 = $this->createMock(Exercise::class);
-        $record2 = $this->createMock(Exercise::class);
-        $record3 = $this->createMock(Exercise::class);
-        $record4 = $this->createMock(Exercise::class);
-
-        $record1->method('getDate')->willReturn(new \DateTime($this->today));
-        $record2->method('getDate')->willReturn(new \DateTime($this->weekAgo));
-        $record3->method('getDate')->willReturn(new \DateTime($this->twoWeeksAgo));
-        $record4->method('getDate')->willReturn(new \DateTime($this->weekAgo));
-
-
-        $this->repo
-            ->method('findBy')
-            ->willReturn([ $record1, $record2, $record3, $record4 ]);
-
-        $results = $this->fetcher->fetch(new \DateTime());
-
-        $this->assertContains($record1, $results[$this->today]);
-        $this->assertContains($record3, $results[$this->twoWeeksAgo]);
-        $this->assertContains($record2, $results[$this->weekAgo]);
-        $this->assertContains($record2, $results[$this->weekAgo]);
+        $this->assertInstanceOf(ExerciseDashboardContainer::class, $results);
     }
 
     /**
@@ -163,14 +132,26 @@ class DashboardFetcherTest extends TestCase
         $record1->method('getDescription')->willReturn('Exercise Z');
         $record2->method('getDescription')->willReturn('Exercise A');
 
-
         $this->repo
             ->method('findBy')
             ->willReturn([$record1, $record2]);
 
-        $results = $this->fetcher->fetch(new \DateTime());
+        $fetcher = $this->getMockBuilder(DashboardFetcher::class)
+            ->setMethods([ 'getDashboardContainer' ])
+            ->setConstructorArgs([ $this->repo, $this->formatter ])
+            ->getMock();
 
-        $this->assertEquals($record2, $results[$this->today][0]);
-        $this->assertEquals($record1, $results[$this->today][1]);
+        $container = $this->createMock(ExerciseDashboardContainer::class);
+
+        $container
+            ->expects($this->exactly(2))
+            ->method('addExercise')
+            ->withConsecutive([ $record2 ], [ $record1 ]);
+
+        $fetcher
+            ->method('getDashboardContainer')
+            ->willReturn($container);
+
+        $fetcher->fetch(new \DateTime($this->today));
     }
 }

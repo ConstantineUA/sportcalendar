@@ -18,10 +18,12 @@ class DashboardController extends Controller
      */
     public function calendarAction(DashboardFetcher $fetcher)
     {
-        $data = $fetcher->fetch(new \DateTime('now'));
+        $container = $fetcher->fetch(new \DateTime('now'));
 
         return $this->render('dashboard/index.html.twig', [
-            'data' => array_values($data),
+            'today' => $container->getExercisesForStartDate(),
+            'weekAgo' => $container->getExercisesForWeekAgo(),
+            'twoWeeksAgo' => $container->getExercisesForTwoWeeksAgo(),
         ]);
     }
 }
