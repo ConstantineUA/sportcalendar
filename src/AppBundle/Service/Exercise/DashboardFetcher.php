@@ -60,7 +60,9 @@ class DashboardFetcher
         // I'd prefer to have a custom method in the repository to run this query
         // along with the logic to prepare dates but the task description
         // suggested to implement it without repository methods
-        $records = $this->repo->findByDate(array_keys($results));
+        $records = $this->repo->findBy([
+            'date' => array_keys($results),
+        ]);
 
         usort($records, function ($exerciseA, $exerciseB) {
             return strnatcasecmp($exerciseA->getDescription(), $exerciseB->getDescription());
