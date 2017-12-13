@@ -6,15 +6,29 @@ use AppBundle\Service\DateTime\DateTimeFormatter;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Unit tests for DateTimeFormatter
+ */
 class DateTimeFormatterTest extends TestCase
 {
+    /**
+     * SUT
+     *
+     * @var DateTimeFormatter
+     */
     protected $formatter;
 
+    /**
+     * Initial setup
+     */
     public function setUp()
     {
         $this->formatter = new DateTimeFormatter();
     }
 
+    /**
+     * Check convertion to DB format
+     */
     public function testToDbFormat()
     {
         $dateStr = '2017-09-25';
@@ -23,5 +37,4 @@ class DateTimeFormatterTest extends TestCase
 
         $this->assertEquals($dateStr, $this->formatter->toDbFormat($date));
     }
-
 }

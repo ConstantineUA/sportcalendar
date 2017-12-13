@@ -9,20 +9,56 @@ use AppBundle\Service\Exercise\DashboardFetcher;
 
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Unit tests for DashboardFetcher service
+ */
 class DashboardFetcherTest extends TestCase
 {
+    /**
+     * Mock for ExerciseRepository
+     *
+     * @var ExerciseRepository
+     */
     protected $repo;
 
+    /**
+     * SUT
+     *
+     * @var DashboardFetcher
+     */
     protected $fetcher;
 
+    /**
+     * Mock for DateTimeFormatter
+     *
+     * @var DateTimeFormatter
+     */
     protected $formatter;
 
+    /**
+     * String date used in tests as today
+     *
+     * @var string
+     */
     protected $today;
 
+    /**
+     * String date used in tests as a week ago
+     *
+     * @var string
+     */
     protected $weekAgo;
 
+    /**
+     * String date used in tests as 2 weeks ago
+     *
+     * @var string
+     */
     protected $twoWeeksAgo;
 
+    /**
+     * Initialize all mock and sut
+     */
     public function setUp()
     {
         $this->repo = $this->createMock(ExerciseRepository::class);
@@ -42,6 +78,9 @@ class DashboardFetcherTest extends TestCase
         $this->twoWeeksAgo = '2017-09-10';
     }
 
+    /**
+     * Test that repository is asked for exercises in the correct daterange
+     */
     public function testRepositoryIsAskedCorrectDates()
     {
         $startDate = new \DateTime($this->today);
@@ -62,6 +101,9 @@ class DashboardFetcherTest extends TestCase
         $this->fetcher->fetch($startDate);
     }
 
+    /**
+     * Test format of returned results
+     */
     public function testFetchResultsAreReturnedAsArrayWithThreeColumns()
     {
         $startDate = new \DateTime($this->today);
@@ -79,6 +121,9 @@ class DashboardFetcherTest extends TestCase
         $this->assertArrayHasKey($this->twoWeeksAgo, $results);
     }
 
+    /**
+     * Test that fetched results are correctly rearranged
+     */
     public function testFetchedRecordsAreDividedBetweenDates()
     {
         $record1 = $this->createMock(Exercise::class);
@@ -104,6 +149,9 @@ class DashboardFetcherTest extends TestCase
         $this->assertContains($record2, $results[$this->weekAgo]);
     }
 
+    /**
+     * Test that exercises are properly sorted by description
+     */
     public function testFetchedRecordsAreSorted()
     {
         $record1 = $this->createMock(Exercise::class);

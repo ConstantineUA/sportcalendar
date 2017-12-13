@@ -66,6 +66,8 @@ class Exercise
     protected $time;
 
     /**
+     * Get ID
+     *
      * @return int
      */
     public function getId()
@@ -74,6 +76,8 @@ class Exercise
     }
 
     /**
+     * Get description
+     *
      * @return string
      */
     public function getDescription()
@@ -82,6 +86,8 @@ class Exercise
     }
 
     /**
+     * Set description
+     *
      * @param string $description
      */
     public function setDescription($description)
@@ -90,6 +96,8 @@ class Exercise
     }
 
     /**
+     * Get weight
+     *
      * @return float
      */
     public function getWeight()
@@ -98,6 +106,8 @@ class Exercise
     }
 
     /**
+     * Set weight
+     *
      * @param float $weight
      */
     public function setWeight($weight)
@@ -107,6 +117,8 @@ class Exercise
 
 
     /**
+     * Get date
+     *
      * @return \DateTime
      */
     public function getDate()
@@ -115,6 +127,8 @@ class Exercise
     }
 
     /**
+     * Set date
+     *
      * @param \DateTime $date
      */
     public function setDate($date)
@@ -123,6 +137,8 @@ class Exercise
     }
 
     /**
+     * Get time
+     *
      * @return \DateTime
      */
     public function getTime()
@@ -131,6 +147,8 @@ class Exercise
     }
 
     /**
+     * Set time
+     *
      * @param \DateTime $time
      */
     public function setTime($time)
@@ -139,6 +157,8 @@ class Exercise
     }
 
     /**
+     * Get repetitions
+     *
      * @return int
      */
     public function getRepetitions()
@@ -147,6 +167,8 @@ class Exercise
     }
 
     /**
+     * Set repetitions
+     *
      * @param int $repetitions
      */
     public function setRepetitions($repetitions)

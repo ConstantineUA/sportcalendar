@@ -9,6 +9,11 @@ namespace AppBundle\Service\DateTime;
  */
 class DateTimeFormatter
 {
+    /**
+     * Database date format
+     *
+     * @var string
+     */
     const DB_FORMAT = 'Y-m-d';
 
     /**
